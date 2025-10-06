@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: techmatch-ocr-api
+    ports:
+      - "12000:12000"
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - HOST=0.0.0.0
+      - PORT=12000
+      - LOG_LEVEL=INFO
+      - CORS_ORIGINS=*
+      - ALLOWED_HOSTS=*
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+      - ./temp:/app/temp
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:12000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - techmatch-network
+
+  # Optional: MongoDB for production use
+  # mongodb:
+  #   image: mongo:7.0
+  #   container_name: techmatch-mongodb
+  #   ports:
+  #     - "27017:27017"
+  #   environment:
+  #     - MONGO_INITDB_ROOT_USERNAME=admin
+  #     - MONGO_INITDB_ROOT_PASSWORD=password
+  #     - MONGO_INITDB_DATABASE=techmatch
+  #   volumes:
+  #     - mongodb_data:/data/db
+  #   restart: unless-stopped
+  #   networks:
+  #     - techmatch-network
+
+  # Optional: Redis for caching
+  # redis:
+  #   image: redis:7.2-alpine
+  #   container_name: techmatch-redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+  #   restart: unless-stopped
+  #   networks:
+  #     - techmatch-network
+
+networks:
+  techmatch-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  redis_data:
