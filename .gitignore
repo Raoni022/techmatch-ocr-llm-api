@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+env/
+venv/
+
+# Env & cache
+.env
+*.env
+.cache/
+.cache_huggingface/
+
+# Artifacts
+*.tar*
+*.zip
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# Docker
+*.pid
+*.sock
+
+# Tests
+coverage/
+htmlcov/
