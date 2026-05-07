@@ -1,100 +1,130 @@
-# TechMatch – Document Intelligence API (OCR + NLP + Ranking)
+# AI Document Intelligence API
 
-> A production-oriented API for extracting, analyzing, and ranking documents using OCR and NLP techniques.
+A portfolio-grade FastAPI system for extracting, analyzing, and ranking documents using OCR and lightweight NLP techniques.
 
-## What this project is
+This repository demonstrates document intelligence pipeline design for workflows such as document screening, classification, knowledge extraction, and query-based ranking.
 
-This project simulates a real-world document intelligence system used in scenarios such as:
-- resume screening
-- document classification
-- knowledge extraction pipelines
+## Evaluator Quick Scan
 
-It goes beyond basic OCR by transforming raw documents into structured insights.
+| Area | Current implementation |
+|---|---|
+| API | FastAPI REST API |
+| OCR | Tesseract-based document/image text extraction |
+| NLP | Lightweight/local NLP service for summarization, keywords, sentiment, and categories |
+| Ranking | Query-to-document relevance scoring |
+| Batch processing | Multi-file processing with per-document success/failure isolation |
+| Auditability | Audit log abstraction with local/mock implementation |
+| Docs | Swagger/OpenAPI via FastAPI |
+| Status | Applied AI backend prototype |
 
----
+## Why this project exists
 
-## What this project demonstrates
+Most OCR demos stop at raw text extraction. Real document workflows usually need more:
 
-- OCR processing using Tesseract
-- NLP-based text analysis
-- semantic ranking (query vs document)
-- API design with FastAPI
-- batch processing with audit logging
-- applied AI pipeline design
+- extract text from files
+- summarize or classify content
+- compare documents against a query
+- rank results by relevance
+- isolate failures during batch processing
+- keep audit logs for operational review
 
----
+This project shows how those concerns can be organized into a backend API.
 
 ## Core Flow
 
-Document → OCR → Text → NLP → Ranking → Decision
+```text
+Document Input
+  -> OCR Extraction
+  -> Text Cleaning
+  -> NLP Analysis
+  -> Query-Based Ranking
+  -> Structured API Response
+  -> Audit Log
+```
 
----
+## Current capabilities
 
-## Why this matters
+- health endpoint
+- supported language endpoint
+- text analysis endpoint
+- structured information extraction from raw text
+- batch document processing
+- optional query-based ranking
+- summary-only mode when no query is provided
+- audit log endpoint
+- usage statistics endpoint
+- global exception handler
 
-Most OCR systems stop at text extraction.
+## What is implemented vs. intentionally simplified
 
-This project demonstrates how to:
-- convert documents into meaningful signals
-- compare documents semantically
-- rank results based on relevance
-- build a usable decision pipeline
+Implemented:
 
-This is closer to production AI systems than typical demos.
+- FastAPI application structure
+- upload/batch processing route
+- OCR service boundary
+- lightweight NLP service boundary
+- ranking logic for query-based processing
+- audit log abstraction
+- structured response models
+- health and stats endpoints
 
----
+Simplified for local reproducibility:
+
+- NLP layer uses a lightweight/local implementation rather than a paid LLM provider
+- audit logging uses a local/mock implementation instead of a managed database by default
+- no persistent document storage layer yet
+- no vector database or embedding cache yet
+- authentication and rate limiting are not included in this prototype
+
+This is best read as a document intelligence backend prototype, not a fully deployed enterprise document platform.
 
 ## Architecture Overview
 
-- FastAPI for API layer
-- OCR service (Tesseract)
-- NLP processing layer (analysis + summarization)
-- ranking engine (query-based scoring)
-- MongoDB for audit logging
+```text
+Client
+  -> FastAPI API
+      -> File Upload / Batch Route
+      -> OCR Service
+      -> NLP Service
+      -> Ranking Logic
+      -> Audit Log
+      -> Structured Response
+```
 
----
+## Engineering decisions
 
-## Engineering Decisions
-
-- modular services (OCR, NLP, ranking)
-- batch-safe processing with error isolation
-- lightweight NLP models for speed
-- separation between extraction and ranking logic
-
----
+- Keep OCR, NLP, ranking, and API concerns separated.
+- Support batch processing with per-document success/failure handling.
+- Return relevance scores only when a query is provided.
+- Keep local NLP lightweight so the project can be reviewed without paid API keys.
+- Make audit logging optional so pipeline execution does not fail when logging is unavailable.
 
 ## Trade-offs
 
-- Tesseract instead of cloud OCR (lower cost, lower accuracy)
-- lightweight NLP instead of large LLMs (faster, less powerful)
-- no vector DB (can be extended to RAG)
+- Tesseract is lower cost and locally runnable, but less accurate than managed OCR for noisy scans.
+- Lightweight NLP is faster and easier to review, but less capable than LLM-based semantic extraction.
+- Query ranking is intentionally simple and can be upgraded to embeddings + vector search.
+- The current project focuses on pipeline design rather than production security.
 
----
+## Future improvements
 
-## Limitations
-
-- no persistent document storage
-- no embedding cache
-- simplified NLP pipeline
-
----
-
-## Future Improvements
-
-- integrate vector database (FAISS / Pinecone)
-- add RAG pipeline
-- upgrade NLP to LLM-based processing
+- add persistent document storage
+- integrate vector search using pgvector, FAISS, or Chroma
+- add embedding cache
+- add LLM-based extraction and classification
 - add authentication and rate limiting
-- containerized deployment with orchestration
+- add Docker Compose with persistence services
+- add evaluation data for OCR/ranking quality
+- add CI workflow for tests and linting
 
----
+## Suggested evaluator talking points
+
+- how the system separates extraction, analysis, ranking, and audit logging
+- why OCR-only systems are not enough for document workflows
+- how to upgrade the ranking layer to embeddings/RAG
+- how to add retries and dead-letter handling for failed documents
+- how to add persistent storage and authentication for production use
 
 ## Status
 
-**Status:** Applied AI pipeline / backend system prototype
-
----
-
-## Notes
-
-This project is part of a broader portfolio focused on document intelligence, AI pipelines, and production-oriented system design.
+Applied AI pipeline / backend system prototype.
